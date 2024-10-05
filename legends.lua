@@ -1,7 +1,7 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "QFB|Legends of speed", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest", IntroText = "QFB Team"})
 local Tab = Window:MakeTab({
-	Name = "Testing-Zone",
+	Name = "Farm",
 	Icon = "",
 	PremiumOnly = false
 })
@@ -59,3 +59,40 @@ Tab:AddToggle({
     end    
 })
 
+local Tab = Window:MakeTab({
+	Name = "Teleport",
+	Icon = "",
+	PremiumOnly = false
+})
+
+
+local TeleportCoordinates = {
+    Omega = Vector3.new(4529.80, 74.32, 6404.12),
+    ["Comming Soon"] = Vector3.new(5000, 100, 7000) -- Adicione as coordenadas que você deseja para essa opção
+}
+
+Tab:AddDropdown({
+    Name = "Dropdown",
+    Default = "Omega",
+    Options = {"Omega", "Comming Soon"},
+    Callback = function(Value)
+        selectedOption = Value -- Armazena a opção selecionada
+    end    
+})
+
+Tab:AddButton({
+    Name = "Button!",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart") -- Espera até que o HumanoidRootPart esteja disponível
+
+        -- Teleporta o jogador para as coordenadas da opção selecionada
+        if TeleportCoordinates[selectedOption] then
+            humanoidRootPart.Position = TeleportCoordinates[selectedOption]
+            print(selectedOption .. " teleportado para: " .. tostring(TeleportCoordinates[selectedOption]))
+        else
+            print("Opção inválida.")
+        end
+    end    
+})
