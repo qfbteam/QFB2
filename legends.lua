@@ -99,20 +99,30 @@ local Tab = Window:MakeTab({
 -- Supondo que você tenha o objeto 'Player' e 'Hoops' no seu jogo
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 local hoopsFolder = workspace:WaitForChild("Hoops") -- A pasta que contém os objetos
 
 local isTeleporting = false
+local itemIndex = 1
 
--- Função para teleportar todos os objetos dentro da pasta "Hoops"
-local function teleportHoops()
+-- Função para teleportar o humanoide para a pasta "Hoops" e teleportar os itens
+local function teleportToHoops()
 	while isTeleporting do
-		for _, item in pairs(hoopsFolder:GetChildren()) do
-			if item:IsA("Model") then
-				item:SetPrimaryPartCFrame(humanoid.RootPart.CFrame) -- Teleporta o modelo para a posição do humanoide
+		-- Teleporta o humanoide para a posição do primeiro item na pasta "Hoops"
+		local items = hoopsFolder:GetChildren()
+		if #items > 0 then
+			local item = items[itemIndex]
+			if item:IsA("Model") and item.PrimaryPart then
+				humanoidRootPart.CFrame = item.PrimaryPart.CFrame -- Teleporta o humanoide para o item
+
+				-- Teleporta o item para o humanoide
+				item:SetPrimaryPartCFrame(humanoidRootPart.CFrame)
+
+				-- Atualiza o índice do item a ser teleportado
+				itemIndex = (itemIndex % #items) + 1 -- Move para o próximo item, volta ao primeiro se chegar ao fim
 			end
 		end
-		wait(0.1) -- Aguarda um pouco antes de repetir
+		wait(1) -- Aguarda um segundo antes de teleportar o próximo item
 	end
 end
 
@@ -122,12 +132,12 @@ Tab:AddToggle({
 	Default = false,
 	Callback = function(Value)
 		isTeleporting = Value
+		itemIndex = 1 -- Reinicia o índice dos itens ao ativar
 		if Value then
-			teleportHoops() -- Inicia o loop de teleportação
+			teleportToHoops() -- Inicia o loop de teleportação
 		end
 	end
 })
-
 
 local Tab = Window:MakeTab({
 	Name = "Teleport",
