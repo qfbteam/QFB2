@@ -62,7 +62,7 @@ Tab:AddToggle({
 local isRunning = false -- Variável para controlar o loop
 
 Tab:AddToggle({
-    Name = "This is a toggle!",
+    Name = "Farm Rebhirt",
     Default = false,
     Callback = function(Value)
         print(Value)
