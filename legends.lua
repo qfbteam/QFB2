@@ -62,7 +62,7 @@ Tab:AddToggle({
 local isRunning = false -- Variável para controlar o loop
 
 Tab:AddToggle({
-    Name = "Farm Rebhirt",
+    Name = "Rebhirt",
     Default = false,
     Callback = function(Value)
         print(Value)
@@ -89,6 +89,44 @@ while true do
         break -- Sai do loop se o toggle estiver desativado
     end
 end
+
+local Tab = Window:MakeTab({
+	Name = "Hoops",
+	Icon = "",
+	PremiumOnly = false
+})
+
+-- Supondo que você tenha o objeto 'Player' e 'Hoops' no seu jogo
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local hoopsFolder = workspace:WaitForChild("Hoops") -- A pasta que contém os objetos
+
+local isTeleporting = false
+
+-- Função para teleportar todos os objetos dentro da pasta "Hoops"
+local function teleportHoops()
+	while isTeleporting do
+		for _, item in pairs(hoopsFolder:GetChildren()) do
+			if item:IsA("Model") then
+				item:SetPrimaryPartCFrame(humanoid.RootPart.CFrame) -- Teleporta o modelo para a posição do humanoide
+			end
+		end
+		wait(0.1) -- Aguarda um pouco antes de repetir
+	end
+end
+
+-- Configura o toggle
+Tab:AddToggle({
+	Name = "Teleport Hoops",
+	Default = false,
+	Callback = function(Value)
+		isTeleporting = Value
+		if Value then
+			teleportHoops() -- Inicia o loop de teleportação
+		end
+	end
+})
 
 
 local Tab = Window:MakeTab({
