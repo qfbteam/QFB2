@@ -59,6 +59,38 @@ Tab:AddToggle({
     end    
 })
 
+local isRunning = false -- Variável para controlar o loop
+
+Tab:AddToggle({
+    Name = "This is a toggle!",
+    Default = false,
+    Callback = function(Value)
+        print(Value)
+        isRunning = Value -- Atualiza a variável com o estado do toggle
+
+        if Value then
+            -- Começa a rodar quando o toggle é ativado
+            while isRunning do
+                local args = {
+                    [1] = "rebirthRequest"
+                }
+                game:GetService("ReplicatedStorage").rEvents.rebirthEvent:FireServer(unpack(args))
+                
+                wait(1) -- Espera 1 segundo antes de repetir (ajuste conforme necessário)
+            end
+        end
+    end    
+})
+
+-- Para garantir que o loop seja encerrado quando o toggle for desativado
+while true do
+    wait(0.1) -- Aguarda um pouco para não sobrecarregar o desempenho
+    if not isRunning then
+        break -- Sai do loop se o toggle estiver desativado
+    end
+end
+
+
 local Tab = Window:MakeTab({
 	Name = "Teleport",
 	Icon = "",
@@ -81,7 +113,7 @@ Tab:AddDropdown({
 })
 
 Tab:AddButton({
-    Name = "Button!",
+    Name = "Tp",
     Callback = function()
         local player = game.Players.LocalPlayer
         local character = player.Character or player.CharacterAdded:Wait()
